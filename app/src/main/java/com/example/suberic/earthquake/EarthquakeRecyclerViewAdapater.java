@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.suberic.earthquake.databinding.ListItemEarthquakeBinding;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -27,19 +29,18 @@ public class EarthquakeRecyclerViewAdapater extends RecyclerView.Adapter<Earthqu
     }
 
     @Override
-    public EarthquakeRecyclerViewAdapater.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_item_earthquake, viewGroup, false);
-        return new ViewHolder(view);
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+       ListItemEarthquakeBinding binding = ListItemEarthquakeBinding.inflate(
+               LayoutInflater.from(viewGroup.getContext()),viewGroup,false);
+       return new ViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Earthquake earthquake = mEarthquakes.get(position);
 
-        viewHolder.date.setText(TIME_FORMAT.format(earthquake.getDate()));
-        viewHolder.details.setText(earthquake.getDetails());
-        viewHolder.magnitude.setText(MAGNITUDE_FORMAT.format(earthquake.getMagnitude()));
+        viewHolder.binding.setEarthquake(earthquake);
+        viewHolder.binding.executePendingBindings();
     }
 
     @Override
@@ -47,15 +48,13 @@ public class EarthquakeRecyclerViewAdapater extends RecyclerView.Adapter<Earthqu
         return mEarthquakes.size();
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView date;
-        public final TextView details;
-        public final TextView magnitude;
+        public final ListItemEarthquakeBinding binding;
 
-        public ViewHolder(View itemView) {
-            super(itemView);
-            date = (TextView) itemView.findViewById(R.id.date);
-            details = (TextView) itemView.findViewById(R.id.details);
-            magnitude = (TextView) itemView.findViewById(R.id.magnitude);
+        public ViewHolder(ListItemEarthquakeBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.setTimeformat(TIME_FORMAT);
+            binding.setMagnitudeformat(MAGNITUDE_FORMAT);
         }
     }
 
