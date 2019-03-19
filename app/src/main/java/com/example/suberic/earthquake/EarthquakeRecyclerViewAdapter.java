@@ -15,41 +15,41 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class EarthquakeRecyclerViewAdapater extends RecyclerView.Adapter<EarthquakeRecyclerViewAdapater.ViewHolder>  {
+public class EarthquakeRecyclerViewAdapter extends
+        RecyclerView.Adapter<EarthquakeRecyclerViewAdapter.ViewHolder> {
+
+    private final List<Earthquake> mEarthquakes;
 
     private static final SimpleDateFormat TIME_FORMAT =
             new SimpleDateFormat("HH:mm", Locale.US);
     private static final NumberFormat MAGNITUDE_FORMAT =
             new DecimalFormat("0.0");
 
-    private final List<Earthquake> mEarthquakes;
-
-    public EarthquakeRecyclerViewAdapater(List<Earthquake> mEarthquakes) {
-        this.mEarthquakes = mEarthquakes;
+    public EarthquakeRecyclerViewAdapter(List<Earthquake> earthquakes ) {
+        mEarthquakes = earthquakes;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-       ListItemEarthquakeBinding binding = ListItemEarthquakeBinding.inflate(
-               LayoutInflater.from(viewGroup.getContext()),viewGroup,false);
-       return new ViewHolder(binding);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ListItemEarthquakeBinding binding = ListItemEarthquakeBinding.inflate(
+                LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         Earthquake earthquake = mEarthquakes.get(position);
-
-        viewHolder.binding.setEarthquake(earthquake);
-        viewHolder.binding.executePendingBindings();
+        holder.binding.setEarthquake(earthquake);
+        holder.binding.executePendingBindings();
     }
 
     @Override
     public int getItemCount() {
         return mEarthquakes.size();
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final ListItemEarthquakeBinding binding;
-
         public ViewHolder(ListItemEarthquakeBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
@@ -57,5 +57,4 @@ public class EarthquakeRecyclerViewAdapater extends RecyclerView.Adapter<Earthqu
             binding.setMagnitudeformat(MAGNITUDE_FORMAT);
         }
     }
-
 }
