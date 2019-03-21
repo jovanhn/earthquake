@@ -33,13 +33,17 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class EarthquakeViewModel extends AndroidViewModel {
     private static final String TAG = "EarthquakeUpdate";
-    private MutableLiveData<List<Earthquake>> earthquakes;
+    private LiveData<List<Earthquake>> earthquakes;
     public EarthquakeViewModel(Application application) {
         super(application);
     }
     public LiveData<List<Earthquake>> getEarthquakes() {
         if (earthquakes == null) {
-            earthquakes = new MutableLiveData<List<Earthquake>>();
+
+            earthquakes = EarthquakeDatabaseAccessor
+                    .getInstance(getApplication())
+                    .earthquakeDAO()
+                    .loadAllEarthquakes();
             loadEarthquakes();
         }
         return earthquakes;
@@ -142,6 +146,11 @@ public class EarthquakeViewModel extends AndroidViewModel {
                 } catch (SAXException e) {
                     Log.e(TAG, "SAX Exception", e);
                 }
+                EarthquakeDatabaseAccessor
+                        .getInstance(getApplication())
+                        .earthquakeDAO()
+                        .insertEarthquakes(earthquakes);
+
 
                 // Return our result array.
                 return earthquakes;
@@ -149,8 +158,6 @@ public class EarthquakeViewModel extends AndroidViewModel {
 
             @Override
             protected void onPostExecute(List<Earthquake> data) {
-                // Update the Live Data with the new list.
-                earthquakes.setValue(data);
             }
         }.execute();
     }
